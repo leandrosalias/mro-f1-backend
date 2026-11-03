@@ -1,0 +1,61 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: mro-f1-backend
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/mrof1}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 0
+      idle-timeout: 300000 # 5 minutos: libera conexiones cuando no hay usuarios activos
+      connection-timeout: 20000
+
+  jpa:
+    hibernate:
+      ddl-auto: validate # Flyway crea las tablas; Hibernate valida que coincidan con tus Entidades
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
+    locations: classpath:db/migration
+
+  security:
+    oauth2:
+      client:
+        registration:
+          discord:
+            client-id: ${DISCORD_CLIENT_ID:dummy-id}
+            client-secret: ${DISCORD_CLIENT_SECRET:dummy-secret}
+            client-authentication-method: client_secret_post
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope:
+              - identify
+            client-name: Discord
+        provider:
+          discord:
+            authorization-uri: https://discord.com/api/oauth2/authorize
+            token-uri: https://discord.com/api/oauth2/token
+            user-info-uri: https://discord.com/api/users/@me
+            user-name-attribute: id
+
+# Propiedades personalizadas de nuestro dominio
+app:
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}
+  discord:
+    webhook-url: ${DISCORD_WEBHOOK_URL:}
+  mro:
+    base-url: "https://www.miniracingonline.com/clasificacion.php"
