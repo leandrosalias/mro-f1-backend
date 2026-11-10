@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Order(2)
-public class DriversWorkshopLockValidator implements UpgradePurchaseValidator {
+public class DriverWorkshopLockValidator implements UpgradePurchaseValidator {
 
     @Override
     public void validate(UpgradePurchaseContext context) {
